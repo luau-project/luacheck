@@ -3,7 +3,11 @@ local utils = require "luacheck.utils"
 local multithreading = {}
 
 local lanes_ok, lanes = pcall(require, "lanes")
-lanes_ok = lanes_ok and pcall(lanes.configure)
+if type(jit) == "table" then
+   lanes_ok = lanes_ok and pcall(lanes.configure, { allocator = "protected" })
+else
+   lanes_ok = lanes_ok and pcall(lanes.configure)
+end
 multithreading.has_lanes = lanes_ok
 multithreading.lanes = lanes
 multithreading.default_jobs = 1
